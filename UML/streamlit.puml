@@ -1,0 +1,13 @@
+@startuml StreamlitFlow
+start
+:Initialize MQTT client;
+:Configure Streamlit page;
+repeat
+  :Receive sensor updates;
+  :Update charts and controls;
+  if (User triggers command?) then (yes)
+    :Publish MQTT command;
+  endif
+repeat while (application running)
+stop
+@enduml

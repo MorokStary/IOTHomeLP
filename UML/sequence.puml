@@ -1,0 +1,18 @@
+@startuml CommunicationSequence
+actor User
+participant Streamlit
+participant "MQTT Broker" as Broker
+participant ESP32
+participant Sensors
+participant Actuators
+
+User -> Streamlit : interacts via GUI
+Streamlit -> Broker : publish control commands
+Broker -> ESP32 : MQTT message
+ESP32 -> Actuators : set state
+ESP32 -> Sensors : read data
+Sensors --> ESP32 : measurements
+ESP32 -> Broker : publish sensor data
+Broker -> Streamlit : deliver readings
+Streamlit -> User : update interface
+@enduml
