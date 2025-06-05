@@ -1,0 +1,33 @@
+@startuml АлгоритмПублікації
+
+skinparam layoutDirection topToBottom
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+}
+skinparam componentStyle rectangle
+
+start
+
+:Ініціалізація сенсорів і Wi-Fi;
+:Перевірка з'єднання з MQTT-брокером;
+
+if (MQTT-з’єднання активне?) then (так)
+  :Зчитування даних із сенсорів;
+  :Перевірка достовірності значень;
+  if (Дані валідні?) then (так)
+    :Формування MQTT-повідомлення;
+    :Публікація у топік;
+  else (ні)
+    :Повторне зчитування;
+  endif
+else (ні)
+  :Спроба повторного підключення;
+  :Буферизація останніх даних;
+endif
+
+:Очікування до наступного циклу;
+
+stop
+
+@enduml

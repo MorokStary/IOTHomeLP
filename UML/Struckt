@@ -1,0 +1,41 @@
+@startuml СтруктураВзаємодії
+
+skinparam componentStyle rectangle
+skinparam layoutDirection topToBottom
+
+package "Користувач" {
+  actor User
+}
+
+package "Інтерфейс керування (Streamlit)" {
+  component "Графічна панель" as GUI
+  component "MQTT-клієнт (paho-mqtt)" as WebMQTT
+  component "Логіка Python" as WebLogic
+}
+
+package "MQTT-брокер (HiveMQ)" {
+  interface "Топік публікації" as TopicPub
+  interface "Топік підписки" as TopicSub
+}
+
+package "IoT-вузол ESP32" {
+  component "Сенсори (DHT22, YL-69)" as Sensors
+  component "MQTT-клієнт (Adafruit MQTT)" as EspMQTT
+  component "Виконавчі пристрої\n(реле, зволожувач)" as Actuators
+}
+
+User --> GUI : Інтеракція
+GUI --> WebLogic : Події користувача
+WebLogic --> WebMQTT : Відправка MQTT-команд
+WebMQTT --> TopicSub : Публікація керуючих команд
+
+TopicPub --> WebMQTT : Дані від ESP32
+WebMQTT --> GUI : Оновлення інтерфейсу
+
+Sensors --> EspMQTT : Вимірювання параметрів
+EspMQTT --> TopicPub : Публікація сенсорних даних
+
+TopicSub --> EspMQTT : Команди керування
+EspMQTT --> Actuators : Вмикання пристроїв
+
+@enduml

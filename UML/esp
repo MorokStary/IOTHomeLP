@@ -1,0 +1,32 @@
+@startuml ОбробкаMQTTКоманди
+
+skinparam layoutDirection topToBottom
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+}
+skinparam componentStyle rectangle
+
+start
+
+:Ініціалізація MQTT-клієнта;
+:Підписка на керуючі топіки;
+
+repeat
+  :Очікування нового повідомлення;
+
+  if (Повідомлення отримано?) then (так)
+    :Перевірка структури повідомлення;
+    if (Команда валідна?) then (так)
+      :Визначення цільового пристрою;
+      :Зміна стану виконавчого елемента;
+    else (ні)
+      :Ігнорування або логування помилки;
+    endif
+  endif
+
+repeat while (MQTT-з’єднання активне?)
+
+stop
+
+@enduml
